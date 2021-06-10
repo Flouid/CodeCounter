@@ -2,6 +2,7 @@
 #include <vector>
 #include <filesystem>
 #include <fstream>
+#include <map>
 
 
 using namespace std;
@@ -49,39 +50,48 @@ string get_extension(const string & filename) {
     }
 }
 
-void search_directory(const string & path, int & js_lines, int & scss_lines) {
+void search_directory(const string & path, map<string, int> & extensions) {
     vector<string> filenames = get_filenames(path);
     string extension;
 
     for (const string & filename: filenames) {
-        if (filename == "node_modules") {
+        if (filename.find("node_modules") != string::npos) {
             continue;
         }
 
         extension = get_extension(filename);
 
         if (extension == "directory") {
-            search_directory(filename, js_lines, scss_lines);
+            search_directory(filename, extensions);
         }
-        else if (extension == ".js") {
-            js_lines += get_lines(filename);
+        else if(extension == ".DS_Store" || extension == ".json" ||
+                extension == ".gitignore" || extension == ".example.json") {
+            continue;
         }
-        else if (extension == ".scss") {
-            scss_lines += get_lines(filename);
+        else  {
+            extensions[extension] += get_lines(filename);
         }
-
     }
 }
 
 int main() {
     string client = "/Users/flouid/Documents/atl-project-monitor/client/src";
-    int js_lines = 0;
-    int scss_lines = 0;
-    search_directory(client, js_lines, scss_lines);
+    map<string, int> extensions;
+    search_directory(client, extensions);
 
     cout << "Client:" << endl;
-    cout << "Found " << js_lines << " lines of javascript." << endl;
-    cout << "Found " << scss_lines << " lines of scss." << endl;
+    for (const auto & extension: extensions) {
+        cout << "Found " << extension.second << " lines of " << extension.first << endl;
+    }
+
+    string server = "/Users/flouid/Documents/atl-project-monitor/server";
+    extensions.clear();
+    search_directory(server, extensions);
+    cout << endl << "Server:" << endl;
+    for (const auto & extension: extensions) {
+        cout << "Found " << extension.second << " lines of " << extension.first << endl;
+    }
+
 
     return 0;
 }
