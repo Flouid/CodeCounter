@@ -47,7 +47,7 @@ string get_extension(const string & filename)
         return filename.substr(period_loc, filename.length());
 }
 
-int search_directory(const string & path, map<string, int> & extensions) {
+int search_directory(const string & path, map<string, int[2]> & extensions) {
     vector<string> filenames = get_filenames(path);
     string extension;
     int files_searched = 0;
@@ -63,8 +63,10 @@ int search_directory(const string & path, map<string, int> & extensions) {
             continue;
         } else if (extension == ".DS_Store" || extension == ".json" || extension == ".gitignore" || extension == ".example.json")
             continue;
-        else
-            extensions[extension] += get_lines(filename);
+        else {
+            extensions[extension][0] += get_lines(filename);
+            ++extensions[extension][1];
+        }
 
         ++files_searched;
     }
@@ -73,12 +75,12 @@ int search_directory(const string & path, map<string, int> & extensions) {
 
 int main() {
     string client = "/Users/flouid/Downloads/project-monitor-louis-dev/client/src";
-    map<string, int> extensions;
+    map<string, int[2]> extensions;
     int files_searched = search_directory(client, extensions);
 
     cout << "Client:" << endl;
     for (const auto & extension: extensions)
-        cout << "Found " << extension.second << " lines of " << extension.first << endl;
+        cout << "Found " << extension.second[0] << " lines of " << extension.first << " across " << extension.second[1] << " files" << endl;
     cout << "Searched " << files_searched << " files" << endl;
 
     string server = "/Users/flouid/Downloads/project-monitor-louis-dev/server";
@@ -86,7 +88,7 @@ int main() {
     files_searched = search_directory(server, extensions);
     cout << endl << "Server:" << endl;
     for (const auto & extension: extensions)
-        cout << "Found " << extension.second << " lines of " << extension.first << endl;
+        cout << "Found " << extension.second[0] << " lines of " << extension.first << " across " << extension.second[1] << " files" << endl;
     cout << "Searched " << files_searched << " files" << endl;
 
     return 0;
