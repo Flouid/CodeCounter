@@ -74,22 +74,31 @@ int search_directory(const string & path, map<string, int[2]> & extensions) {
 }
 
 int main() {
+    int sum_lines = 0;
+
     string client = "/Users/flouid/Downloads/project-monitor-louis-dev/client/src";
-    map<string, int[2]> extensions;
-    int files_searched = search_directory(client, extensions);
+    map<string, int[2]> client_extensions;
+    int client_files_searched = search_directory(client, client_extensions);
 
     cout << "Client:" << endl;
-    for (const auto & extension: extensions)
-        cout << "Found " << extension.second[0] << " lines of " << extension.first << " across " << extension.second[1] << " files" << endl;
-    cout << "Searched " << files_searched << " files" << endl;
+    for (const auto & extension: client_extensions) {
+        cout << "\tFound " << extension.second[0] << " lines of " << extension.first << " across " << extension.second[1] << " files" << endl;
+        sum_lines += extension.second[0];
+    }
+    cout << "\tSearched " << client_files_searched << " files" << endl;
 
     string server = "/Users/flouid/Downloads/project-monitor-louis-dev/server";
-    extensions.clear();
-    files_searched = search_directory(server, extensions);
+    map<string, int[2]> server_extensions;
+    int server_files_searched = search_directory(server, server_extensions);
     cout << endl << "Server:" << endl;
-    for (const auto & extension: extensions)
-        cout << "Found " << extension.second[0] << " lines of " << extension.first << " across " << extension.second[1] << " files" << endl;
-    cout << "Searched " << files_searched << " files" << endl;
+    for (const auto & extension: server_extensions) {
+        cout << "\tFound " << extension.second[0] << " lines of " << extension.first << " across " << extension.second[1] << " files" << endl;
+        sum_lines += extension.second[0];
+    }
+    cout << "\tSearched " << server_files_searched << " files" << endl;
+
+    cout << endl << "Total:" << endl;
+    cout << "\tFound " << sum_lines << " lines across " << client_files_searched + server_files_searched << " files" << endl;
 
     return 0;
 }
