@@ -68,7 +68,7 @@ int search_directory(const string & path, map<string, int[2]> & extensions) {
 
 int main() {
     int sum_lines = 0;
-    string client = "/Users/flouid/Downloads/project-monitor-louis-dev/client/src";
+    string client = "/Users/flouid/Documents/project-monitor/client/src";
     map<string, int[2]> client_extensions;
     int client_files_searched = search_directory(client, client_extensions);
 
@@ -79,7 +79,7 @@ int main() {
     }
     cout << "\tSearched " << client_files_searched << " files" << endl;
 
-    string server = "/Users/flouid/Downloads/project-monitor-louis-dev/server";
+    string server = "/Users/flouid/Documents/project-monitor/server";
     map<string, int[2]> server_extensions;
     int server_files_searched = search_directory(server, server_extensions);
 
